@@ -1,0 +1,82 @@
+USE [Sistema_Votaciones_Electronicas]
+GO
+/** Object:  Table [dbo].[Candidatos]    Script Date: 20/7/2024 18:25:51 **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Candidatos](
+	[CandidatoID] [int] IDENTITY(1,1) NOT NULL,
+	[Nombre] [nvarchar](100) NOT NULL,
+	[PartidoPolitico] [nvarchar](50) NOT NULL,
+	[Plataforma] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[CandidatoID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/** Object:  Table [dbo].[Resultados]    Script Date: 20/7/2024 18:25:51 **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Resultados](
+	[ResultadoID] [int] IDENTITY(1,1) NOT NULL,
+	[CandidatoID] [int] NOT NULL,
+	[TotalVotos] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ResultadoID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/** Object:  Table [dbo].[Usuarios]    Script Date: 20/7/2024 18:25:51 **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Usuarios](
+	[UsuarioID] [int] IDENTITY(1,1) NOT NULL,
+	[NombreUsuario] [nvarchar](50) NOT NULL,
+	[Contraseña] [nvarchar](100) NOT NULL,
+	[Rol] [nvarchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[UsuarioID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ_NombreUsuario] UNIQUE NONCLUSTERED 
+(
+	[NombreUsuario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/** Object:  Table [dbo].[Votos]    Script Date: 20/7/2024 18:25:51 **/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Votos](
+	[VotoID] [int] IDENTITY(1,1) NOT NULL,
+	[CandidatoID] [int] NOT NULL,
+	[FechaHora] [datetime] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[VotoID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Resultados]  WITH CHECK ADD  CONSTRAINT [FK_Resultados_Candidatos] FOREIGN KEY([CandidatoID])
+REFERENCES [dbo].[Candidatos] ([CandidatoID])
+GO
+ALTER TABLE [dbo].[Resultados] CHECK CONSTRAINT [FK_Resultados_Candidatos]
+GO
+ALTER TABLE [dbo].[Votos]  WITH CHECK ADD  CONSTRAINT [FK_Votos_Candidatos] FOREIGN KEY([CandidatoID])
+REFERENCES [dbo].[Candidatos] ([CandidatoID])
+GO
+ALTER TABLE [dbo].[Votos] CHECK CONSTRAINT [FK_Votos_Candidatos]
+GO
+ALTER TABLE [dbo].[Candidatos]  WITH CHECK ADD  CONSTRAINT [CK_PartidoPolitico] CHECK  ((len([PartidoPolitico])>(0)))
+GO
+ALTER TABLE [dbo].[Candidatos] CHECK CONSTRAINT [CK_PartidoPolitico]
+GO
